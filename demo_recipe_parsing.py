@@ -20,13 +20,14 @@ def _convert_crf_output_to_json(crf_output):
 
 
 def recipe_parse(url):
-    if not url: return "", ""
+    if not url: return "Url is empty!", ""
     ingredients = recipe_page_crawl(url)
-    model_file = "20210330_2040-nyt-ingredients-snapshot-2015-49381ad.crfmodel"
-    crf_output = _exec_crf_test(ingredients, model_file)
-    # print(_convert_crf_output_to_json(crf_output.split('\n')))
-
-    return "\n".join(ingredients), _convert_crf_output_to_json(crf_output.split('\n'))
+    if ingredients:
+        model_file = "20210330_2040-nyt-ingredients-snapshot-2015-49381ad.crfmodel"
+        crf_output = _exec_crf_test(ingredients, model_file)
+        return "\n".join(ingredients), _convert_crf_output_to_json(crf_output.split('\n'))
+    else:
+        return "Couldn't get ingredients from page!", ""
 
 
 iface = gr.Interface(fn=recipe_parse, inputs="text", outputs=["text", "text"], css="styles.css")
