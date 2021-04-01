@@ -8,7 +8,7 @@ def clean_ingredient(ingredient):
     replacements = {"¼": "0.25", "½": "0.5", "⅔": "0.67"}
     return "".join([replacements.get(c, c) for c in ingredient])
 
-
+# extraction patten for each site
 def recipe_page_crawl_allrecipes(parsed_page):
     ret = []
     ingredient_elems = parsed_page.find_all('span', class_='ingredients-item-name')
