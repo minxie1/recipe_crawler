@@ -4,18 +4,18 @@ import ast
 
 
 def _load_categories():
-    records = pd.read_csv('categories.csv')
-    records.astype({'product_category_id': 'int32'})
+    records = pd.read_csv('categories_v2.csv').dropna()
+    records.astype({'PRODUCT_CATEGORY_ID': 'int32'})
     categories = []
     for r in records.to_dict(orient='records'):
-        id = r['product_category_id']
-        name = r['product_category']
-        product_ids = r['products']
+        id = r['PRODUCT_CATEGORY_ID']
+        name = r['PRODUCT_CATEGORY']
+        products = r['PRODUCTS']
         categories.append(
             {
                 'id': id,
                 'name': name,
-                'product_ids': ast.literal_eval(product_ids) if product_ids else []
+                'products': ast.literal_eval(products) if products else []
             }
         )
     return categories
@@ -75,6 +75,5 @@ _index = _index_categories(_categories)
 
 def link_categories(text):
     return _link(text, _index)
-
 
 
