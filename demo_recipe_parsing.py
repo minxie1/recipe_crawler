@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import utils
 import category_linker
-
+import rule_based_linker
 from recipe_page_crawl import recipe_page_crawl
 
 
@@ -40,10 +40,21 @@ def recipe_parse(url):
             # join tokens
             for k in r:
                 r[k] = ' '.join(r[k])
+
+        edit_distance_threshold = 5
         # link categories and products
         for r in results:
-            categories = _link_ingredient_to_categories(r)
-            r['linked_categories'] = categories
+            ingredient_term = r["name"]
+
+            # first check for full category name match, if we can find a match, then we finish
+            mapped_product_category, products_info = rule_based_linker.map_ingredients_to_categories(ingredient_term, edit_distance_threshold)
+            if len(mapped_product_category) > 0:
+                r["linked_categories"] = products_info
+
+            # if we cannot find the match, we will utilize the ngram linker to match
+            else:
+                categories = category_linker.link_categories(ingredient_term)
+                r['linked_categories'] = categories
 
         return "\n".join(ingredients), json.dumps(results, indent=2)
     else:
