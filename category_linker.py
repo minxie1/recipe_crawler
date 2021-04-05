@@ -1,3 +1,4 @@
+# todo: refer to the entit linker package without repeated code
 import pandas as pd
 import ast
 import numpy as np
@@ -221,4 +222,4 @@ def link_categories(text):
     return _link(text, _index)
 
 
-print(link_categories('spelt or farro'))
+# print(link_categories('Onion'))
