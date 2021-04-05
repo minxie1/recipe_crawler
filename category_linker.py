@@ -11,6 +11,9 @@ import tempfile
 import pickle
 import os
 
+strick_match = os.environ.get('STRICT_MATCH', False)
+
+
 def download(remote_path):
     temp_filepath = next(tempfile._get_candidate_names())
 
@@ -143,7 +146,6 @@ def _normalize(text):
 
 ranker_model = read_obj('s3://instacart-lore/development/entity_linking/ranker_model.pickle')
 
-
 _ranker = EntityRanker.load_from_dict(**ranker_model)
 
 
@@ -152,9 +154,17 @@ def _index_categories(categories):
     for c in categories:
         name = c['name']
         normalized_name = _normalize(name)
+        # category name index
+        if strick_match:
+            e = normalized_name
+            items = index.get(e, [])
+            if c not in items:
+                items.append(c)
+            index[e] = items
+            continue
+        # n-gram index
         name_tokens = normalized_name.split()
         total = len(name_tokens)
-        # index all ngrams
         for n in range(1, total + 1):
             for i in range(total - n + 1):
                 e = ' '.join(name_tokens[i: i + n])
@@ -166,7 +176,8 @@ def _index_categories(categories):
 
 
 def _rank(normalized_text, mention_entity_pairs):
-    mention_entity_id_pairs = [(mention, 'CATEGORY:' + str(int(entity['id']) )  ) for mention, entity in mention_entity_pairs]
+    mention_entity_id_pairs = [(mention, 'CATEGORY:' + str(int(entity['id']))) for mention, entity in
+                               mention_entity_pairs]
     rank_scores = _ranker.predict(normalized_text, mention_entity_id_pairs)
     so = np.argsort(rank_scores)
     mention_entity_pairs = list(np.array(mention_entity_pairs)[so])
@@ -208,3 +219,6 @@ _index = _index_categories(_categories)
 
 def link_categories(text):
     return _link(text, _index)
+
+
+print(link_categories('vegetable stock'))
