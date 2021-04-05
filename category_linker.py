@@ -11,7 +11,7 @@ import tempfile
 import pickle
 import os
 
-strick_match = os.environ.get('STRICT_MATCH', False)
+strick_match = os.environ.get('STRICT_MATCH', True)
 
 
 def download(remote_path):
@@ -120,7 +120,7 @@ class EntityRanker(object):
 
 
 def _load_categories():
-    records = pd.read_csv('categories_v2.csv').dropna()
+    records = pd.read_csv('product_categories.csv').dropna()
     records.astype({'PRODUCT_CATEGORY_ID': 'int32'})
     categories = []
     for r in records.to_dict(orient='records'):
@@ -221,4 +221,4 @@ def link_categories(text):
     return _link(text, _index)
 
 
-print(link_categories('vegetable stock'))
+print(link_categories('spelt or farro'))
