@@ -44,8 +44,8 @@ class NLP_NLTK(object):
         from nltk.corpus import stopwords
         from nltk.tokenize import word_tokenize
         from nltk.stem import PorterStemmer
-        nltk.download('stopwords')
-        nltk.download('punkt')
+        nltk.download('stopwords', os.getcwd())
+        nltk.download('punkt',os.getcwd())
 
         stop_words = set(stopwords.words('english'))
         porter = PorterStemmer()
