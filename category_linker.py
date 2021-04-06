@@ -1,3 +1,4 @@
+
 import pandas as pd
 import ast
 import numpy as np
@@ -13,6 +14,7 @@ import os
 
 strick_match = os.environ.get('STRICT_MATCH', True)
 
+# todo: remove unused functions, and packages
 
 def download(remote_path):
     temp_filepath = next(tempfile._get_candidate_names())
@@ -40,12 +42,12 @@ def read_obj(remote_path):
 class NLP_NLTK(object):
     def __init__(self, **kwargs):
         import nltk
-
         from nltk.corpus import stopwords
         from nltk.tokenize import word_tokenize
         from nltk.stem import PorterStemmer
-        nltk.download('stopwords', os.getcwd())
-        nltk.download('punkt',os.getcwd())
+
+        nltk.download('stopwords')
+        nltk.download('punkt')
 
         stop_words = set(stopwords.words('english'))
         porter = PorterStemmer()
@@ -143,8 +145,10 @@ _nlp = NLP_NLTK()
 def _normalize(text):
     return ' '.join(_nlp.to_normalized_tokens(text))
 
+with open('ranker_model_small.pickle', 'rb') as f:
+    ranker_model = pickle.load(f)
 
-ranker_model = read_obj('s3://instacart-lore/development/entity_linking/ranker_model.pickle')
+# ranker_model = read_obj('s3://instacart-lore/development/entity_linking/ranker_model.pickle')
 
 _ranker = EntityRanker.load_from_dict(**ranker_model)
 
