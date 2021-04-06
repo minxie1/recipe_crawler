@@ -36,6 +36,7 @@ def read_obj(remote_path):
     os.remove(temp_filepath)
     return obj
 
+NTTK_DATA_FOLDER = os.environ.get('NTTK_DATA_FOLDER','/app/nltk_data')
 
 class NLP_NLTK(object):
     def __init__(self, **kwargs):
@@ -44,8 +45,8 @@ class NLP_NLTK(object):
         from nltk.corpus import stopwords
         from nltk.tokenize import word_tokenize
         from nltk.stem import PorterStemmer
-        nltk.download('stopwords')
-        nltk.download('punkt')
+        nltk.download('stopwords', NTTK_DATA_FOLDER)
+        nltk.download('punkt', NTTK_DATA_FOLDER)
 
         stop_words = set(stopwords.words('english'))
         porter = PorterStemmer()
@@ -221,4 +222,4 @@ def link_categories(text):
     return _link(text, _index)
 
 
-# print(link_categories('onion'))
+print(link_categories('onion'))
