@@ -5,4 +5,4 @@ nltk>=3.6.6
 scikit-learn==0.24.1
 boto3==1.16
 pandas==1.2.3
-numpy==1.20.2
+numpy>=1.21
